@@ -1,6 +1,7 @@
 [build]
+  base = "/"
   publish = "src/web/public"
-  command = ""
+  command = "echo 'No build required - static files'"
 
 [[redirects]]
   from = "/*"
