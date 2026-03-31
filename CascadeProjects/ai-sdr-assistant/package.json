@@ -8,7 +8,7 @@
     "dev": "node src/index.js",
     "start": "node src/index.js",
     "web": "node src/web/server.js",
-    "build": "echo 'Static site - no build step required'"
+    "build": "netlify build"
   },
   "keywords": ["sdr", "sales", "linkedin", "automation", "ai", "outreach"],
   "author": "",

@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hassan Kazmi SDR - Case Management & Productivity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Playfair+Display:wght@700;900&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --mahogany: #3d2817;
+            --dark-wood: #4a3728;
+            --brass: #b8860b;
+            --leather: #8b4513;
+            --cream: #f5f5dc;
+            --burgundy: #800020;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(to bottom, #2c1810 0%, #1a0f0a 100%);
+        }
+        
+        .wood-panel {
+            background: linear-gradient(90deg, rgba(61,40,23,0.3) 1px, transparent 1px),
+                        linear-gradient(rgba(61,40,23,0.3) 1px, transparent 1px),
+                        linear-gradient(to bottom, #3d2817, #2c1810);
+            background-size: 100px 100px, 100px 100px, 100%;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .judge-bench {
+            background: linear-gradient(145deg, #4a3728, #3d2817);
+            border: 3px solid #b8860b;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(184,134,11,0.3);
+        }
+        
+        .case-file {
+            background: linear-gradient(to bottom, #f5f5dc, #e8e8d0);
+            border: 2px solid #8b4513;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.5);
+        }
+        
+        .brass-plate {
+            background: linear-gradient(145deg, #d4af37, #b8860b);
+            border: 2px solid #8b7355;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.3);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .leather-bound {
+            background: linear-gradient(145deg, #8b4513, #654321);
+            border: 3px solid #5c3317;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(139,69,19,0.5);
+        }
+        
+        .courtroom-header {
+            background: linear-gradient(to right, #1a0f0a, #2c1810, #1a0f0a);
+            border-bottom: 4px solid #b8860b;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        }
+        
+        .serif-title {
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 2px;
+        }
+        
+        .legal-text {
+            font-family: 'Libre Baskerville', serif;
+        }
+        
+        .streak-flame {
+            animation: flicker 2s infinite;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+        
+        .calendar-day {
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-day:hover {
+            transform: scale(1.1);
+        }
+        
+        .calendar-active {
+            background: linear-gradient(135deg, #52b788, #2d6a4f);
+            box-shadow: 0 0 15px rgba(82, 183, 136, 0.6);
+        }
+        
+        .quest-item {
+            transition: all 0.3s ease;
+        }
+        
+        .quest-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .achievement-locked {
+            filter: grayscale(100%);
+            opacity: 0.4;
+        }
+        
+        .achievement-unlocked {
+            animation: unlock 0.6s ease-out;
+        }
+        
+        @keyframes unlock {
+            0% { transform: scale(0) rotate(-180deg); }
+            50% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        .profile-badge {
+            width: 300px;
+            height: 300px;
+            border-radius: 15px;
+            border: 5px solid #d4af37;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .profile-badge:hover {
+            transform: scale(1.02);
+        }
+        
+        .character-title {
+            background: linear-gradient(135deg, #8b4513, #654321);
+            border: 2px solid #d4af37;
+            padding: 8px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        
+        .stat-bar {
+            background: #2c1810;
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 30px;
+        }
+        
+        .stat-fill {
+            height: 100%;
+            transition: width 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .quest-item {
+            background: linear-gradient(to bottom, #f5f5dc, #e8e8d0);
+            border: 2px solid #8b4513;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        
+        .quest-item:hover {
+            transform: translateX(5px);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .mini-stat {
+            text-align: center;
+            padding: 50px 40px;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #1a0f0a 0%, #2c1810 50%, #3d2817 100%);
+            border-bottom: 5px solid #d4af37;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+        
+        .level-badge {
+            background: radial-gradient(circle, #d4af37, #b8860b);
+            border: 4px solid #8b7355;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.6); }
+            50% { box-shadow: 0 0 50px rgba(212, 175, 55, 0.9); }
+        }
+        
+        .xp-progress {
+            background: linear-gradient(90deg, #b8860b, #d4af37, #ffd700);
+            box-shadow: 0 2px 10px rgba(184,134,11,0.7);
+            transition: width 0.5s ease-in-out;
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -100% 0; }
+            100% { background-position: 100% 0; }
+        }
+        
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+        }
+        
+        .achievement-card {
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .achievement-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+        
+        .achievement-card:hover::before {
+            left: 100%;
+        }
+        
+        .achievement-card:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-gray-100">
+    <!-- Sticky Navigation Bar -->
+    <nav class="wood-panel sticky top-0 z-50 border-b-2" style="border-color: #b8860b;">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="#top" class="text-2xl font-bold serif-title hover:opacity-80 transition-opacity" style="color: #d4af37;" onclick="scrollToTop(event)">
+                    HASSAN KAZMI
+                </a>
+                <div class="flex space-x-6 items-center">
+                    <a href="#dashboard" class="legal-text hover:opacity-80 transition-opacity" style="color: #d4af37;">Analytics</a>
+                    <a href="#calendar" class="legal-text hover:opacity-80 transition-opacity" style="color: #d4af37;">Calendar</a>
+                    <a href="#quests" class="legal-text hover:opacity-80 transition-opacity" style="color: #d4af37;">Quest Log</a>
+                    <a href="#achievements" class="legal-text hover:opacity-80 transition-opacity" style="color: #d4af37;">Achievements</a>
+                    <a href="#data" class="legal-text hover:opacity-80 transition-opacity" style="color: #d4af37;">Data</a>
+                    <a href="https://github.com/Hassan-Kazmi/ai-sdr-assistant" target="_blank" class="legal-text hover:opacity-80 transition-opacity" style="color: #d4af37;"><i class="fab fa-github text-2xl"></i></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div id="top" class="hero-section">
+        <div class="max-w-6xl mx-auto px-6 py-12">
+            <div class="flex flex-col md:flex-row items-start gap-8 mb-8">
+                <!-- Left: Profile Image -->
+                <div class="flex-shrink-0">
+                    <img src="/images/HAK LAW.jpeg" alt="Hassan Kazmi" class="profile-badge" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23d4af37%22/%3E%3Ctext x=%2250%22 y=%2260%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22%232c1810%22 font-family=%22serif%22%3EHK%3C/text%3E%3C/svg%3E'">
+                </div>
+                
+                <!-- Right: All Info -->
+                <div class="flex-1">
+                    <!-- Name and Level -->
+                    <div class="mb-6">
+                        <h1 class="text-5xl font-bold serif-title mb-2" style="color: #d4af37;">HASSAN</h1>
+                        <p class="text-xl mb-4" style="color: #b8860b;">Level <span id="hero-level">1</span></p>
+                        
+                        <!-- Character Titles (earned from achievements) -->
+                        <div class="flex flex-wrap gap-2 mb-4" id="earned-titles">
+                            <!-- Titles will appear here when unlocked -->
+                        </div>
+                        
+                        <!-- Character Type -->
+                        <p class="text-lg legal-text" style="color: #e8e8d0;">Sales Development Representative</p>
+                    </div>
+                    
+                    <!-- Stats Bars -->
+                    <div class="space-y-4 mb-6">
+                <!-- Experience -->
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <span class="legal-text" style="color: #b8860b;">Experience</span>
+                        <span class="legal-text font-bold" style="color: #d4af37;"><span id="current-xp">0</span> / <span id="max-xp">100</span></span>
+                    </div>
+                    <div class="stat-bar">
+                        <div class="stat-fill xp-progress" style="width: 0%; background-size: 200% 100%;" id="xp-bar">
+                            <span id="xp-percent">0%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Health Points (Deals Closed) -->
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <span class="legal-text" style="color: #b8860b;">Deals Closed</span>
+                        <span class="legal-text font-bold" style="color: #52b788;"><span id="hp-current">0</span> / <span id="hp-max">100</span></span>
+                    </div>
+                    <div class="stat-bar">
+                        <div class="stat-fill" style="width: 0%; background: linear-gradient(90deg, #52b788, #2d6a4f);" id="hp-bar">
+                            <span id="hp-percent">0%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Heart Power (Pipeline Value) -->
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <span class="legal-text" style="color: #b8860b;">Pipeline Power</span>
+                        <span class="legal-text font-bold" style="color: #e74c3c;"><span id="heart-current">0</span> / <span id="heart-max">100</span></span>
+                    </div>
+                    <div class="stat-bar">
+                        <div class="stat-fill" style="width: 0%; background: linear-gradient(90deg, #e74c3c, #c0392b);" id="heart-bar">
+                            <span id="heart-percent">0%</span>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Inspirational Quote -->
+            <div class="text-center p-8 rounded-lg" style="background: rgba(61,40,23,0.3); border: 2px solid #b8860b;">
+                <p class="text-xl legal-text italic mb-3" style="color: #e8e8d0;">
+                    "Success in sales comes not from the size of your pipeline, but from the strength of your relationships."
+                </p>
+                <p class="text-sm" style="color: #b8860b;">- Sales Wisdom</p>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboard" class="mb-16">
+            <h2 class="text-4xl font-bold serif-title mb-8" style="color: #d4af37;">Analytics Dashboard</h2>
+            
+            <!-- SDR STATUS Section -->
+            <div class="judge-bench rounded-lg p-8 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-3xl font-bold serif-title" style="color: #d4af37;">
+                        <i class="fas fa-user-tie mr-3"></i>SDR STATUS
+                    </h3>
+                    <button onclick="resetAllData()" class="bg-red-900 hover:bg-red-800 text-white px-6 py-3 rounded-lg font-bold legal-text transition-all">
+                        <i class="fas fa-redo mr-2"></i>Reset All Data
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Streak -->
+                    <div class="case-file rounded-lg p-6 text-center">
+                        <p class="text-sm uppercase tracking-wide mb-2" style="color: #8b4513;">Streak</p>
+                        <p class="text-xs mb-4" style="color: #8b4513;">Consecutive days</p>
+                        <p class="text-6xl font-bold serif-title mb-2" style="color: #2c1810;" id="status-streak">0</p>
+                        <p class="text-sm font-bold" style="color: #52b788;">days in a row!</p>
+                    </div>
+                    
+                    <!-- Total Completed -->
+                    <div class="case-file rounded-lg p-6 text-center">
+                        <p class="text-sm uppercase tracking-wide mb-2" style="color: #8b4513;">Total Completed</p>
+                        <p class="text-xs mb-4" style="color: #8b4513;">All-time tasks</p>
+                        <p class="text-6xl font-bold serif-title mb-2" style="color: #2c1810;" id="status-total">0</p>
+                        <p class="text-sm font-bold" style="color: #52b788;">quests completed</p>
+                    </div>
+                    
+                    <!-- Today's Progress -->
+                    <div class="case-file rounded-lg p-6 text-center">
+                        <p class="text-sm uppercase tracking-wide mb-2" style="color: #8b4513;">Today's Progress</p>
+                        <p class="text-xs mb-4" style="color: #8b4513;">Quests completed today</p>
+                        <p class="text-6xl font-bold serif-title mb-2" style="color: #2c1810;"><span id="status-today">0</span>/<span id="status-today-total">3</span></p>
+                        <div class="mt-4">
+                            <div class="bg-gray-300 rounded-full h-3 overflow-hidden">
+                                <div class="bg-gradient-to-r from-green-600 to-green-400 h-full transition-all" style="width: 0%;" id="today-progress-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Daily Streak Card -->
+                <div class="judge-bench rounded-lg p-6">
+                    <h3 class="text-xl font-bold legal-text mb-4" style="color: #d4af37;">
+                        <i class="fas fa-fire mr-2"></i>Daily Streak
+                    </h3>
+                    <div class="text-center">
+                        <p class="text-6xl mb-4 streak-flame">🔥</p>
+                        <p class="text-5xl font-bold serif-title" style="color: #d4af37;" id="streak-count">0</p>
+                        <p class="text-sm mt-2" style="color: #b8860b;">Consecutive Days</p>
+                        <div class="mt-4 pt-4 border-t" style="border-color: #b8860b;">
+                            <p class="text-xs" style="color: #e8e8d0;">Last Activity: <span id="last-activity">Never</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Overview -->
+                <div class="judge-bench rounded-lg p-6 lg:col-span-2">
+                    <h3 class="text-xl font-bold legal-text mb-4" style="color: #d4af37;">
+                        <i class="fas fa-chart-bar mr-2"></i>Performance Overview
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="case-file rounded p-4 text-center">
+                            <p class="text-3xl font-bold serif-title" style="color: #2c1810;" id="stat-total">0</p>
+                            <p class="text-sm mt-1" style="color: #8b4513;">Cases Filed</p>
+                        </div>
+                        <div class="case-file rounded p-4 text-center">
+                            <p class="text-3xl font-bold serif-title" style="color: #2c1810;" id="stat-meetings">0</p>
+                            <p class="text-sm mt-1" style="color: #8b4513;">Cases Won</p>
+                        </div>
+                        <div class="case-file rounded p-4 text-center">
+                            <p class="text-3xl font-bold serif-title" style="color: #2c1810;" id="stat-active">0</p>
+                            <p class="text-sm mt-1" style="color: #8b4513;">Active Cases</p>
+                        </div>
+                        <div class="case-file rounded p-4 text-center">
+                            <p class="text-3xl font-bold serif-title" style="color: #2c1810;" id="stat-qualified">0</p>
+                            <p class="text-sm mt-1" style="color: #8b4513;">Qualified</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="judge-bench rounded-lg p-6">
+                    <h3 class="text-xl font-bold legal-text mb-4" style="color: #d4af37;">Weekly Activity</h3>
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+                <div class="judge-bench rounded-lg p-6">
+                    <h3 class="text-xl font-bold legal-text mb-4" style="color: #d4af37;">Case Status</h3>
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Quest History -->
+            <div class="judge-bench rounded-lg p-6">
+                <h3 class="text-xl font-bold legal-text mb-4" style="color: #d4af37;">
+                    <i class="fas fa-history mr-2"></i>Recent Quest History
+                </h3>
+                <div id="quest-history" class="space-y-3">
+                    <p class="text-center py-8" style="color: #b8860b;">No quest history yet</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CASES SECTION -->
+        <div id="cases" class="mb-16">
+            <h2 class="text-4xl font-bold serif-title mb-8" style="color: #d4af37;">Active Case Files</h2>
+            <div id="conversations-list" class="space-y-6">
+                <div class="judge-bench rounded-lg p-12 text-center">
+                    <i class="fas fa-briefcase text-6xl mb-6" style="color: #b8860b;"></i>
+                    <p class="legal-text text-2xl" style="color: #d4af37;">No Active Cases</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CALENDAR SECTION -->
+        <div id="calendar" class="mb-16">
+            <h2 class="text-4xl font-bold serif-title mb-8" style="color: #d4af37;">Activity Calendar</h2>
+            
+            <div class="judge-bench rounded-lg p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="changeMonth(-1)" class="brass-plate px-4 py-2 rounded" style="color: #2c1810;">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h3 class="text-2xl font-bold serif-title" style="color: #d4af37;" id="calendar-month">March 2026</h3>
+                    <button onclick="changeMonth(1)" class="brass-plate px-4 py-2 rounded" style="color: #2c1810;">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-7 gap-2 mb-4">
+                    <div class="text-center font-bold" style="color: #d4af37;">Sun</div>
+                    <div class="text-center font-bold" style="color: #d4af37;">Mon</div>
+                    <div class="text-center font-bold" style="color: #d4af37;">Tue</div>
+                    <div class="text-center font-bold" style="color: #d4af37;">Wed</div>
+                    <div class="text-center font-bold" style="color: #d4af37;">Thu</div>
+                    <div class="text-center font-bold" style="color: #d4af37;">Fri</div>
+                    <div class="text-center font-bold" style="color: #d4af37;">Sat</div>
+                </div>
+                
+                <div class="grid grid-cols-7 gap-2" id="calendar-grid"></div>
+            </div>
+
+            <div class="mt-6 judge-bench rounded-lg p-6">
+                <h3 class="text-xl font-bold legal-text mb-4" style="color: #d4af37;">
+                    <i class="fas fa-calendar-plus mr-2"></i>Add Calendar Event
+                </h3>
+                <form id="calendar-event-form" class="space-y-4">
+                    <div>
+                        <label class="block font-bold mb-2" style="color: #b8860b;">Event Title</label>
+                        <input type="text" id="event-title" class="w-full px-4 py-2 bg-white border-2 rounded" style="border-color: #8b4513; color: #2c1810;" placeholder="Meeting with prospect" required>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-2" style="color: #b8860b;">Event Date</label>
+                        <input type="date" id="event-date" class="w-full px-4 py-2 bg-white border-2 rounded" style="border-color: #8b4513; color: #2c1810;" required>
+                    </div>
+                    <button type="submit" class="brass-plate px-6 py-3 rounded-lg font-bold w-full hover:scale-105 transition-all" style="color: #2c1810;">
+                        <i class="fas fa-plus mr-2"></i>Add Event
+                    </button>
+                </form>
+            </div>
+
+            <div class="mt-6 judge-bench rounded-lg p-6">
+                <h3 class="text-xl font-bold legal-text mb-4" style="color: #d4af37;">
+                    <i class="fas fa-list mr-2"></i>Your Events
+                </h3>
+                <div id="calendar-events-list" class="space-y-3">
+                    <p class="text-center py-4" style="color: #b8860b;">No events scheduled</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTS SECTION -->
+        <div id="quests" class="mb-16">
+            <h2 class="text-4xl font-bold serif-title mb-8" style="color: #d4af37;">Quest Log</h2>
+            
+            <!-- Today's Active Quests -->
+            <div class="judge-bench rounded-lg p-8 mb-8">
+                <h3 class="text-3xl font-bold mb-6" style="color: #d4af37;">Today's Active Quests (<span id="quests-completed-today">0</span>/<span id="quests-total-today">3</span>)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="case-file rounded-lg p-6 hover:scale-105 transition-all">
+                        <input type="checkbox" class="w-6 h-6 mb-4" onchange="completeQuest('daily', 0)">
+                        <h4 class="text-xl font-bold mb-2" style="color: #2c1810;">Cold Outreach</h4>
+                        <p class="mb-4" style="color: #8b4513;">Send 10 connection requests</p>
+                        <span class="brass-plate px-4 py-2 rounded" style="color: #2c1810;">+25 XP</span>
+                    </div>
+                    <div class="case-file rounded-lg p-6 hover:scale-105 transition-all">
+                        <input type="checkbox" class="w-6 h-6 mb-4" onchange="completeQuest('daily', 1)">
+                        <h4 class="text-xl font-bold mb-2" style="color: #2c1810;">Follow-Ups</h4>
+                        <p class="mb-4" style="color: #8b4513;">Follow up with 5 prospects</p>
+                        <span class="brass-plate px-4 py-2 rounded" style="color: #2c1810;">+15 XP</span>
+                    </div>
+                    <div class="case-file rounded-lg p-6 hover:scale-105 transition-all">
+                        <input type="checkbox" class="w-6 h-6 mb-4" onchange="completeQuest('daily', 2)">
+                        <h4 class="text-xl font-bold mb-2" style="color: #2c1810;">Book Meeting</h4>
+                        <p class="mb-4" style="color: #8b4513;">Schedule 1 discovery call</p>
+                        <span class="brass-plate px-4 py-2 rounded" style="color: #2c1810;">+50 XP</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <button onclick="showQuestType('daily')" class="brass-plate py-4 rounded-lg font-bold text-xl" style="color: #2c1810;">
+                    <i class="fas fa-sun mr-2"></i>Daily Quests
+                </button>
+                <button onclick="showQuestType('weekly')" class="brass-plate py-4 rounded-lg font-bold text-xl" style="color: #2c1810;">
+                    <i class="fas fa-calendar-week mr-2"></i>Weekly Quests
+                </button>
+                <button onclick="showQuestType('custom')" class="brass-plate py-4 rounded-lg font-bold text-xl" style="color: #2c1810;">
+                    <i class="fas fa-plus mr-2"></i>Custom Quests
+                </button>
+            </div>
+
+            <div id="daily-quests" class="quest-section">
+                <div class="judge-bench rounded-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold legal-text mb-4" style="color: #d4af37;">Daily Quests</h3>
+                    <div class="space-y-3" id="daily-quest-list">
+                        <div class="case-file rounded p-4 quest-item flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="w-5 h-5 mr-4" onchange="completeQuest('daily', 0)">
+                                <div>
+                                    <p class="font-bold" style="color: #2c1810;">File 3 New Cases</p>
+                                    <p class="text-sm" style="color: #8b4513;">Start 3 investigations today</p>
+                                </div>
+                            </div>
+                            <span class="brass-plate px-3 py-1 rounded text-sm" style="color: #2c1810;">+25 XP</span>
+                        </div>
+                        <div class="case-file rounded p-4 quest-item flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="w-5 h-5 mr-4" onchange="completeQuest('daily', 1)">
+                                <div>
+                                    <p class="font-bold" style="color: #2c1810;">Review All Active Cases</p>
+                                    <p class="text-sm" style="color: #8b4513;">Check on ongoing investigations</p>
+                                </div>
+                            </div>
+                            <span class="brass-plate px-3 py-1 rounded text-sm" style="color: #2c1810;">+15 XP</span>
+                        </div>
+                        <div class="case-file rounded p-4 quest-item flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="w-5 h-5 mr-4" onchange="completeQuest('daily', 2)">
+                                <div>
+                                    <p class="font-bold" style="color: #2c1810;">Win 1 Case</p>
+                                    <p class="text-sm" style="color: #8b4513;">Book a meeting with a qualified prospect</p>
+                                </div>
+                            </div>
+                            <span class="brass-plate px-3 py-1 rounded text-sm" style="color: #2c1810;">+50 XP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="weekly-quests" class="quest-section hidden">
+                <div class="judge-bench rounded-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold legal-text mb-4" style="color: #d4af37;">Weekly Quests</h3>
+                    <div class="space-y-3" id="weekly-quest-list">
+                        <div class="case-file rounded p-4 quest-item flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="w-5 h-5 mr-4">
+                                <div>
+                                    <p class="font-bold" style="color: #2c1810;">Win 5 Cases This Week</p>
+                                    <p class="text-sm" style="color: #8b4513;">Book 5 meetings this week</p>
+                                </div>
+                            </div>
+                            <span class="brass-plate px-3 py-1 rounded text-sm" style="color: #2c1810;">+200 XP</span>
+                        </div>
+                        <div class="case-file rounded p-4 quest-item flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="w-5 h-5 mr-4">
+                                <div>
+                                    <p class="font-bold" style="color: #2c1810;">Maintain 7-Day Streak</p>
+                                    <p class="text-sm" style="color: #8b4513;">Stay active every day this week</p>
+                                </div>
+                            </div>
+                            <span class="brass-plate px-3 py-1 rounded text-sm" style="color: #2c1810;">+150 XP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="custom-quests" class="quest-section hidden">
+                <div class="judge-bench rounded-lg p-6">
+                    <h3 class="text-2xl font-bold legal-text mb-4" style="color: #d4af37;">Create Custom Quest</h3>
+                    <form id="custom-quest-form" class="space-y-4">
+                        <div class="case-file rounded p-4">
+                            <label class="block font-bold mb-2" style="color: #2c1810;">Quest Name</label>
+                            <input type="text" id="quest-name" class="w-full px-4 py-2 rounded border-2" style="border-color: #8b4513;" placeholder="Enter quest name">
+                        </div>
+                        <div class="case-file rounded p-4">
+                            <label class="block font-bold mb-2" style="color: #2c1810;">Description</label>
+                            <textarea id="quest-desc" class="w-full px-4 py-2 rounded border-2" style="border-color: #8b4513;" rows="3" placeholder="Describe your quest"></textarea>
+                        </div>
+                        <div class="case-file rounded p-4">
+                            <label class="block font-bold mb-2" style="color: #2c1810;">XP Reward</label>
+                            <input type="number" id="quest-xp" class="w-full px-4 py-2 rounded border-2" style="border-color: #8b4513;" value="25">
+                        </div>
+                        <button type="submit" class="brass-plate w-full py-3 rounded-lg font-bold text-lg" style="color: #2c1810;">
+                            <i class="fas fa-plus mr-2"></i>Create Quest
+                        </button>
+                    </form>
+                </div>
+
+                <div class="judge-bench rounded-lg p-6 mt-6">
+                    <h3 class="text-2xl font-bold legal-text mb-4" style="color: #d4af37;">Your Custom Quests</h3>
+                    <div id="custom-quest-list" class="space-y-3">
+                        <p class="text-center py-8" style="color: #b8860b;">No custom quests yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACHIEVEMENTS SECTION -->
+        <div id="achievements" class="mb-16">
+            <div class="text-center mb-10">
+                <h2 class="text-5xl font-bold serif-title mb-3" style="color: #d4af37;">Hall of Accolades</h2>
+                <p class="text-xl legal-text" style="color: #b8860b;">Your Journey to Excellence</p>
+            </div>
+            
+            <!-- Achievement Progress Summary -->
+            <div class="judge-bench rounded-lg p-8 mb-10">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold serif-title mb-2" style="color: #d4af37;">Achievement Progress</h3>
+                        <p class="legal-text" style="color: #b8860b;">Unlock all achievements to become a legendary attorney</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-6xl font-bold serif-title" style="color: #d4af37;"><span id="achievements-unlocked">0</span>/<span id="total-achievements">47</span></p>
+                        <p class="text-sm uppercase tracking-wide" style="color: #b8860b;">Unlocked</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="bg-gray-900 rounded-full h-4 overflow-hidden">
+                        <div class="xp-progress h-full rounded-full" style="width: 0%; background-size: 200% 100%;" id="achievement-progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10" id="achievements-grid">
+                <!-- Achievements will be populated here -->
+            </div>
+            
+            <!-- REWARDS SECTION -->
+            <div class="text-center mb-10 mt-16">
+                <h2 class="text-5xl font-bold serif-title mb-3" style="color: #d4af37;">Rewards & Milestones</h2>
+                <p class="text-xl legal-text" style="color: #b8860b;">Unlock exclusive rewards as you progress</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="rewards-grid">
+                <!-- Rewards will be populated here -->
+            </div>
+        </div>
+
+        <!-- INVESTIGATION SECTION -->
+        <div id="investigation" class="mb-16">
+            <h2 class="text-4xl font-bold serif-title mb-8" style="color: #d4af37;">Begin Investigation</h2>
+            
+            <div class="judge-bench rounded-lg p-10">
+                <form id="campaign-form" class="space-y-6">
+                    <div class="case-file rounded-lg p-6">
+                        <label class="block font-bold legal-text text-lg mb-3" style="color: #8b4513;">
+                            <i class="fas fa-crosshairs mr-2"></i>Target Positions
+                        </label>
+                        <input type="text" id="job-titles" class="w-full px-5 py-4 bg-white border-2 rounded legal-text text-lg" style="border-color: #8b4513; color: #2c1810;" placeholder="VP of Sales, Director of Marketing">
+                    </div>
+
+                    <div class="case-file rounded-lg p-6">
+                        <label class="block font-bold legal-text text-lg mb-3" style="color: #8b4513;">
+                            <i class="fas fa-building mr-2"></i>Industries
+                        </label>
+                        <input type="text" id="industries" class="w-full px-5 py-4 bg-white border-2 rounded legal-text text-lg" style="border-color: #8b4513; color: #2c1810;" placeholder="SaaS, Technology, FinTech">
+                    </div>
+
+                    <div class="case-file rounded-lg p-6">
+                        <label class="block font-bold legal-text text-lg mb-3" style="color: #8b4513;">
+                            <i class="fas fa-users mr-2"></i>Number of Prospects
+                        </label>
+                        <input type="number" id="prospect-limit" value="5" min="1" max="50" class="w-full px-5 py-4 bg-white border-2 rounded legal-text text-lg" style="border-color: #8b4513; color: #2c1810;">
+                    </div>
+
+                    <button type="submit" class="w-full brass-plate text-2xl font-bold py-5 rounded-lg serif-title" style="color: #2c1810;">
+                        <i class="fas fa-gavel mr-3"></i>BEGIN INVESTIGATION
+                    </button>
+                </form>
+
+                <div id="campaign-results" class="mt-8 hidden">
+                    <div id="results-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATA MANAGEMENT SECTION -->
+        <div id="data" class="mb-16">
+            <div class="text-center mb-10">
+                <h2 class="text-5xl font-bold serif-title mb-3" style="color: #d4af37;">DATA MANAGEMENT</h2>
+                <p class="text-xl legal-text" style="color: #b8860b;">Backup, Restore & Manage Your Progress</p>
+            </div>
+
+            <!-- Data Overview -->
+            <div class="judge-bench rounded-lg p-8 mb-8">
+                <h3 class="text-2xl font-bold legal-text mb-6" style="color: #d4af37;">
+                    <i class="fas fa-chart-pie mr-3"></i>Your Data Overview
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="case-file rounded-lg p-6 text-center">
+                        <p class="text-5xl font-bold serif-title mb-2" style="color: #2c1810;" id="data-level">1</p>
+                        <p class="text-sm uppercase tracking-wide" style="color: #8b4513;">Level</p>
+                    </div>
+                    <div class="case-file rounded-lg p-6 text-center">
+                        <p class="text-5xl font-bold serif-title mb-2" style="color: #2c1810;" id="data-quests">0</p>
+                        <p class="text-sm uppercase tracking-wide" style="color: #8b4513;">Quest Entries</p>
+                    </div>
+                    <div class="case-file rounded-lg p-6 text-center">
+                        <p class="text-5xl font-bold serif-title mb-2" style="color: #2c1810;" id="data-streak">0</p>
+                        <p class="text-sm uppercase tracking-wide" style="color: #8b4513;">Day Streak</p>
+                    </div>
+                    <div class="case-file rounded-lg p-6 text-center">
+                        <p class="text-5xl font-bold serif-title mb-2" style="color: #2c1810;" id="data-size">0KB</p>
+                        <p class="text-sm uppercase tracking-wide" style="color: #8b4513;">Data Size</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Data -->
+            <div class="judge-bench rounded-lg p-8 mb-8">
+                <h3 class="text-2xl font-bold legal-text mb-4" style="color: #d4af37;">
+                    <i class="fas fa-download mr-3"></i>Export Data
+                </h3>
+                <p class="text-lg mb-6" style="color: #e8e8d0;">Download a complete backup of all your progress, stats, and quest history.</p>
+                <button onclick="exportData()" class="brass-plate px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105" style="color: #2c1810;">
+                    <i class="fas fa-file-download mr-2"></i>Download Backup
+                </button>
+            </div>
+
+            <!-- Import Data -->
+            <div class="judge-bench rounded-lg p-8 mb-8">
+                <h3 class="text-2xl font-bold legal-text mb-4" style="color: #d4af37;">
+                    <i class="fas fa-upload mr-3"></i>Import Data
+                </h3>
+                <p class="text-lg mb-6" style="color: #e8e8d0;">Restore your data from a previously exported backup file.</p>
+                <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
+                <button onclick="document.getElementById('import-file').click()" class="brass-plate px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105" style="color: #2c1810;">
+                    <i class="fas fa-file-upload mr-2"></i>Upload Backup
+                </button>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="bg-red-900 bg-opacity-30 border-2 border-red-600 rounded-lg p-8 mb-8">
+                <h3 class="text-2xl font-bold legal-text mb-4 text-red-400">
+                    <i class="fas fa-exclamation-triangle mr-3"></i>Danger Zone
+                </h3>
+                <p class="text-lg mb-6 text-red-200">
+                    <strong>Warning:</strong> This will permanently delete all your data including stats, quest history, rewards, and achievements. This action cannot be undone!
+                </p>
+                <button onclick="clearAllData()" class="bg-red-700 hover:bg-red-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all">
+                    <i class="fas fa-trash-alt mr-2"></i>Clear All Data
+                </button>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="judge-bench rounded-lg p-8">
+                <h3 class="text-2xl font-bold legal-text mb-6" style="color: #d4af37;">
+                    <i class="fas fa-lightbulb mr-3"></i>💡 Tips
+                </h3>
+                <div class="space-y-4 legal-text text-lg" style="color: #e8e8d0;">
+                    <div class="flex items-start">
+                        <i class="fas fa-check-circle mr-3 mt-1" style="color: #52b788;"></i>
+                        <p>Export your data regularly to avoid losing progress</p>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-check-circle mr-3 mt-1" style="color: #52b788;"></i>
+                        <p>Store backup files in a safe location (cloud storage, external drive)</p>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-check-circle mr-3 mt-1" style="color: #52b788;"></i>
+                        <p>You can transfer your progress between devices using export/import</p>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-check-circle mr-3 mt-1" style="color: #52b788;"></i>
+                        <p>Backup files are in JSON format and can be viewed in any text editor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let playerData = {
+            level: 1,
+            xp: 0,
+            maxXp: 100,
+            streak: 0,
+            lastActivity: null,
+            activeDays: new Set(),
+            customQuests: [],
+            completedQuests: new Set(),
+            completedToday: 0,
+            totalCompleted: 0,
+            achievements: [],
+            unlockedRewards: [],
+            calendarEvents: []
+        };
+        
+        // Comprehensive Achievements - Themed after Suits, Ace Attorney, Danganronpa, Famicom Detective Club, Rain Code
+        const allAchievements = [
+            // Suits Themed
+            { id: 'harvey_specter', name: 'Harvey Specter', desc: 'Close your first deal', icon: 'briefcase', req: 'meetings', count: 1, category: 'Suits' },
+            { id: 'name_partner', name: 'Name Partner', desc: 'Reach Level 10', icon: 'crown', req: 'level', count: 10, category: 'Suits' },
+            { id: 'senior_partner', name: 'Senior Partner', desc: 'Win 25 cases', icon: 'gavel', req: 'meetings', count: 25, category: 'Suits' },
+            { id: 'managing_partner', name: 'Managing Partner', desc: 'Win 50 cases', icon: 'building', req: 'meetings', count: 50, category: 'Suits' },
+            { id: 'pearson_hardman', name: 'Pearson Hardman Legacy', desc: 'Reach Level 20', icon: 'landmark', req: 'level', count: 20, category: 'Suits' },
+            { id: 'closer', name: 'The Closer', desc: 'Win 10 cases in a row', icon: 'trophy', req: 'winStreak', count: 10, category: 'Suits' },
+            { id: 'best_closer', name: 'Best Closer in NYC', desc: 'Win 100 cases', icon: 'medal', req: 'meetings', count: 100, category: 'Suits' },
+            
+            // Ace Attorney Themed
+            { id: 'rookie_attorney', name: 'Rookie Attorney', desc: 'File your first case', icon: 'star', req: 'cases', count: 1, category: 'Ace Attorney' },
+            { id: 'objection', name: 'OBJECTION!', desc: 'File 10 cases', icon: 'hand-paper', req: 'cases', count: 10, category: 'Ace Attorney' },
+            { id: 'hold_it', name: 'HOLD IT!', desc: 'Qualify 5 prospects', icon: 'hand-point-right', req: 'qualified', count: 5, category: 'Ace Attorney' },
+            { id: 'take_that', name: 'TAKE THAT!', desc: 'Win 5 cases', icon: 'fist-raised', req: 'meetings', count: 5, category: 'Ace Attorney' },
+            { id: 'turnabout', name: 'Turnabout Victory', desc: 'Win 3 cases in a row', icon: 'sync-alt', req: 'winStreak', count: 3, category: 'Ace Attorney' },
+            { id: 'ace_attorney', name: 'Ace Attorney', desc: 'Win 20 cases', icon: 'balance-scale-right', req: 'meetings', count: 20, category: 'Ace Attorney' },
+            { id: 'legendary_attorney', name: 'Legendary Attorney', desc: 'Reach Level 15', icon: 'user-tie', req: 'level', count: 15, category: 'Ace Attorney' },
+            { id: 'perfect_record', name: 'Perfect Record', desc: 'Maintain 30-day streak', icon: 'certificate', req: 'streak', count: 30, category: 'Ace Attorney' },
+            
+            // Danganronpa Themed
+            { id: 'hope_detective', name: 'Ultimate Detective', desc: 'File 25 cases', icon: 'search', req: 'cases', count: 25, category: 'Danganronpa' },
+            { id: 'truth_bullet', name: 'Truth Bullet', desc: 'Qualify 10 prospects', icon: 'bullseye', req: 'qualified', count: 10, category: 'Danganronpa' },
+            { id: 'class_trial', name: 'Class Trial Master', desc: 'Win 15 cases', icon: 'users', req: 'meetings', count: 15, category: 'Danganronpa' },
+            { id: 'hope_fragment', name: 'Hope Fragment', desc: 'Complete 50 quests', icon: 'gem', req: 'quests', count: 50, category: 'Danganronpa' },
+            { id: 'despair_crusher', name: 'Despair Crusher', desc: 'Maintain 14-day streak', icon: 'hammer', req: 'streak', count: 14, category: 'Danganronpa' },
+            { id: 'ultimate_hope', name: 'Ultimate Hope', desc: 'Reach Level 25', icon: 'sun', req: 'level', count: 25, category: 'Danganronpa' },
+            
+            // Famicom Detective Club Themed
+            { id: 'detective_assistant', name: 'Detective Assistant', desc: 'File 5 cases', icon: 'user-secret', req: 'cases', count: 5, category: 'Famicom Detective' },
+            { id: 'evidence_collector', name: 'Evidence Collector', desc: 'Qualify 3 prospects', icon: 'folder-open', req: 'qualified', count: 3, category: 'Famicom Detective' },
+            { id: 'mystery_solver', name: 'Mystery Solver', desc: 'Win 8 cases', icon: 'puzzle-piece', req: 'meetings', count: 8, category: 'Famicom Detective' },
+            { id: 'master_detective', name: 'Master Detective', desc: 'Reach Level 12', icon: 'user-graduate', req: 'level', count: 12, category: 'Famicom Detective' },
+            
+            // Rain Code Themed
+            { id: 'master_detective_rain', name: 'Master Detective (Rain Code)', desc: 'File 15 cases', icon: 'cloud-rain', req: 'cases', count: 15, category: 'Rain Code' },
+            { id: 'mystery_labyrinth', name: 'Mystery Labyrinth', desc: 'Win 12 cases', icon: 'dungeon', req: 'meetings', count: 12, category: 'Rain Code' },
+            { id: 'shinigami_pact', name: 'Shinigami Pact', desc: 'Maintain 21-day streak', icon: 'skull', req: 'streak', count: 21, category: 'Rain Code' },
+            { id: 'rain_code_master', name: 'Rain Code Master', desc: 'Reach Level 18', icon: 'cloud-showers-heavy', req: 'level', count: 18, category: 'Rain Code' },
+            { id: 'truth_revealed', name: 'Truth Revealed', desc: 'Qualify 20 prospects', icon: 'eye', req: 'qualified', count: 20, category: 'Rain Code' },
+            
+            // Streak Achievements
+            { id: 'streak_3', name: '3-Day Streak', desc: 'Stay active for 3 days', icon: 'fire', req: 'streak', count: 3, category: 'Streaks' },
+            { id: 'streak_7', name: 'Week Warrior', desc: 'Stay active for 7 days', icon: 'calendar-week', req: 'streak', count: 7, category: 'Streaks' },
+            { id: 'streak_30', name: 'Monthly Master', desc: 'Stay active for 30 days', icon: 'calendar-alt', req: 'streak', count: 30, category: 'Streaks' },
+            { id: 'streak_60', name: 'Unstoppable', desc: 'Stay active for 60 days', icon: 'bolt', req: 'streak', count: 60, category: 'Streaks' },
+            { id: 'streak_100', name: 'Centurion', desc: 'Stay active for 100 days', icon: 'crown', req: 'streak', count: 100, category: 'Streaks' },
+            { id: 'streak_365', name: 'Year of Excellence', desc: 'Stay active for 365 days', icon: 'star', req: 'streak', count: 365, category: 'Streaks' },
+            
+            // Quest Achievements
+            { id: 'quest_10', name: 'Quest Beginner', desc: 'Complete 10 quests', icon: 'tasks', req: 'quests', count: 10, category: 'Quests' },
+            { id: 'quest_25', name: 'Quest Enthusiast', desc: 'Complete 25 quests', icon: 'list-check', req: 'quests', count: 25, category: 'Quests' },
+            { id: 'quest_100', name: 'Quest Master', desc: 'Complete 100 quests', icon: 'clipboard-check', req: 'quests', count: 100, category: 'Quests' },
+            { id: 'quest_500', name: 'Quest Legend', desc: 'Complete 500 quests', icon: 'scroll', req: 'quests', count: 500, category: 'Quests' },
+            
+            // Level Achievements
+            { id: 'level_5', name: 'Rising Star', desc: 'Reach Level 5', icon: 'star-half-alt', req: 'level', count: 5, category: 'Levels' },
+            { id: 'level_30', name: 'Elite Attorney', desc: 'Reach Level 30', icon: 'award', req: 'level', count: 30, category: 'Levels' },
+            { id: 'level_50', name: 'Legendary Status', desc: 'Reach Level 50', icon: 'dragon', req: 'level', count: 50, category: 'Levels' }
+        ];
+        
+        // Rewards System
+        const allRewards = [
+            { id: 'bronze_badge', name: 'Bronze Attorney Badge', desc: 'Awarded for 10 cases won', icon: 'medal', req: 'meetings', count: 10, color: '#CD7F32' },
+            { id: 'silver_badge', name: 'Silver Attorney Badge', desc: 'Awarded for 25 cases won', icon: 'medal', req: 'meetings', count: 25, color: '#C0C0C0' },
+            { id: 'gold_badge', name: 'Gold Attorney Badge', desc: 'Awarded for 50 cases won', icon: 'medal', req: 'meetings', count: 50, color: '#FFD700' },
+            { id: 'platinum_badge', name: 'Platinum Attorney Badge', desc: 'Awarded for 100 cases won', icon: 'medal', req: 'meetings', count: 100, color: '#E5E4E2' },
+            { id: 'diamond_badge', name: 'Diamond Attorney Badge', desc: 'Awarded for 200 cases won', icon: 'gem', req: 'meetings', count: 200, color: '#B9F2FF' },
+            
+            { id: 'streak_master', name: 'Streak Master Title', desc: 'Unlock at 30-day streak', icon: 'fire', req: 'streak', count: 30, color: '#FF4500' },
+            { id: 'eternal_flame', name: 'Eternal Flame Title', desc: 'Unlock at 100-day streak', icon: 'fire-alt', req: 'streak', count: 100, color: '#FF6347' },
+            
+            { id: 'level_10_reward', name: 'Senior Partner Title', desc: 'Unlock at Level 10', icon: 'user-tie', req: 'level', count: 10, color: '#d4af37' },
+            { id: 'level_25_reward', name: 'Managing Partner Title', desc: 'Unlock at Level 25', icon: 'crown', req: 'level', count: 25, color: '#d4af37' },
+            { id: 'level_50_reward', name: 'Legendary Attorney Title', desc: 'Unlock at Level 50', icon: 'trophy', req: 'level', count: 50, color: '#FFD700' },
+            
+            { id: 'quest_50_reward', name: 'Quest Champion Badge', desc: 'Complete 50 quests', icon: 'clipboard-list', req: 'quests', count: 50, color: '#4169E1' },
+            { id: 'quest_100_reward', name: 'Quest Legend Badge', desc: 'Complete 100 quests', icon: 'scroll', req: 'quests', count: 100, color: '#8A2BE2' },
+            
+            { id: 'perfect_week', name: 'Perfect Week Badge', desc: 'Complete all daily quests for 7 days', icon: 'calendar-check', req: 'perfectWeek', count: 1, color: '#32CD32' },
+            { id: 'ace_closer', name: 'Ace Closer Title', desc: 'Win 10 cases in a row', icon: 'bullseye', req: 'winStreak', count: 10, color: '#FF1493' }
+        ];
+
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        // Load saved data
+        function loadData() {
+            const saved = localStorage.getItem('hassanKazmiSDR');
+            if (saved) {
+                const data = JSON.parse(saved);
+                playerData = { ...playerData, ...data };
+                playerData.activeDays = new Set(data.activeDays || []);
+                playerData.completedQuests = new Set(data.completedQuests || []);
+            }
+            updateStreak();
+        }
+
+        // Save data
+        function saveData() {
+            const toSave = {
+                ...playerData,
+                activeDays: Array.from(playerData.activeDays),
+                completedQuests: Array.from(playerData.completedQuests)
+            };
+            localStorage.setItem('hassanKazmiSDR', JSON.stringify(toSave));
+        }
+
+        // Scroll to top
+        function scrollToTop(event) {
+            event.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Calendar event management
+        function addCalendarEvent(title, date) {
+            const event = {
+                id: Date.now(),
+                title: title,
+                date: date
+            };
+            playerData.calendarEvents.push(event);
+            saveData();
+            renderCalendarEvents();
+        }
+
+        function deleteCalendarEvent(eventId) {
+            playerData.calendarEvents = playerData.calendarEvents.filter(e => e.id !== eventId);
+            saveData();
+            renderCalendarEvents();
+        }
+
+        function renderCalendarEvents() {
+            const container = document.getElementById('calendar-events-list');
+            if (playerData.calendarEvents.length === 0) {
+                container.innerHTML = '<p class="text-center py-4" style="color: #b8860b;">No events scheduled</p>';
+                return;
+            }
+
+            container.innerHTML = playerData.calendarEvents
+                .sort((a, b) => new Date(a.date) - new Date(b.date))
+                .map(event => `
+                    <div class="case-file rounded-lg p-4 flex items-center justify-between">
+                        <div>
+                            <p class="font-bold" style="color: #2c1810;">${event.title}</p>
+                            <p class="text-sm" style="color: #8b4513;">${new Date(event.date).toLocaleDateString()}</p>
+                        </div>
+                        <button onclick="deleteCalendarEvent(${event.id})" class="bg-red-900 hover:bg-red-800 text-white px-4 py-2 rounded transition-all">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `).join('');
+        }
+
+        // Custom quest management
+        function deleteCustomQuest(questId) {
+            playerData.customQuests = playerData.customQuests.filter(q => q.id !== questId);
+            saveData();
+            renderCustomQuests();
+        }
+
+        function renderCustomQuests() {
+            const container = document.getElementById('custom-quest-list');
+            if (playerData.customQuests.length === 0) {
+                container.innerHTML = '<p class="text-center py-8" style="color: #b8860b;">No custom quests yet</p>';
+                return;
+            }
+
+            container.innerHTML = playerData.customQuests.map(quest => `
+                <div class="case-file rounded p-4 quest-item flex items-center justify-between">
+                    <div class="flex items-center flex-1">
+                        <input type="checkbox" class="w-5 h-5 mr-4" ${playerData.completedQuests.has(quest.id) ? 'checked' : ''} onchange="completeCustomQuest('${quest.id}')">
+                        <div>
+                            <p class="font-bold" style="color: #2c1810;">${quest.name}</p>
+                            <p class="text-sm" style="color: #8b4513;">${quest.desc}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="brass-plate px-3 py-1 rounded text-sm" style="color: #2c1810;">+${quest.xp} XP</span>
+                        <button onclick="deleteCustomQuest('${quest.id}')" class="bg-red-900 hover:bg-red-800 text-white px-3 py-1 rounded transition-all">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update streak
+        function updateStreak() {
+            const today = new Date().toDateString();
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            
+            if (playerData.lastActivity === today) {
+                // Already active today
+            } else if (playerData.lastActivity === yesterday || !playerData.lastActivity) {
+                // Continue or start streak
+                playerData.streak++;
+                playerData.lastActivity = today;
+                playerData.activeDays.add(today);
+                saveData();
+            } else {
+                // Streak broken
+                playerData.streak = 1;
+                playerData.lastActivity = today;
+                playerData.activeDays.add(today);
+                saveData();
+            }
+            
+            document.getElementById('streak-count').textContent = playerData.streak;
+            document.getElementById('last-activity').textContent = playerData.lastActivity || 'Never';
+        }
+
+        // Smooth scroll with offset for sticky nav
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offset = 80; // Height of sticky nav
+                    const targetPosition = target.offsetTop - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Load stats
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const stats = await response.json();
+                
+                document.getElementById('stat-total').textContent = stats.total || 0;
+                document.getElementById('stat-meetings').textContent = stats.meetingsBooked || 0;
+                document.getElementById('stat-active').textContent = stats.active || 0;
+                document.getElementById('stat-qualified').textContent = stats.qualified || 0;
+
+                updatePlayerXP(stats.total * 10 + stats.meetingsBooked * 50 + stats.qualified * 25);
+                
+                // Update HP bar (Deals Closed)
+                const hpCurrent = stats.meetingsBooked || 0;
+                const hpMax = 100;
+                const hpPercent = Math.min((hpCurrent / hpMax) * 100, 100);
+                document.getElementById('hp-current').textContent = hpCurrent;
+                document.getElementById('hp-max').textContent = hpMax;
+                document.getElementById('hp-bar').style.width = hpPercent + '%';
+                document.getElementById('hp-percent').textContent = Math.round(hpPercent) + '%';
+                
+                // Update Heart Power bar (Pipeline Power - based on active + qualified)
+                const heartCurrent = (stats.active || 0) + (stats.qualified || 0);
+                const heartMax = 100;
+                const heartPercent = Math.min((heartCurrent / heartMax) * 100, 100);
+                document.getElementById('heart-current').textContent = heartCurrent;
+                document.getElementById('heart-max').textContent = heartMax;
+                document.getElementById('heart-bar').style.width = heartPercent + '%';
+                document.getElementById('heart-percent').textContent = Math.round(heartPercent) + '%';
+                
+                // Update achievements and rewards
+                renderAchievements(stats);
+                renderRewards(stats);
+                updateSDRStatus();
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function updatePlayerXP(totalXp) {
+            playerData.xp = totalXp % playerData.maxXp;
+            playerData.level = Math.floor(totalXp / playerData.maxXp) + 1;
+            
+            document.getElementById('hero-level').textContent = playerData.level;
+            document.getElementById('current-xp').textContent = playerData.xp;
+            document.getElementById('max-xp').textContent = playerData.maxXp;
+            
+            const xpPercentage = (playerData.xp / playerData.maxXp) * 100;
+            document.getElementById('xp-bar').style.width = xpPercentage + '%';
+            document.getElementById('xp-percent').textContent = Math.round(xpPercentage) + '%';
+            
+            // Update earned titles based on level
+            updateEarnedTitles();
+            
+            saveData();
+        }
+        
+        // Update earned titles based on achievements/level
+        function updateEarnedTitles() {
+            const titlesContainer = document.getElementById('earned-titles');
+            const titles = [];
+            
+            // Level-based titles
+            if (playerData.level >= 5) titles.push('Rising Star');
+            if (playerData.level >= 10) titles.push('Master Closer');
+            if (playerData.level >= 15) titles.push('Pipeline Architect');
+            if (playerData.level >= 20) titles.push('Deal Hunter');
+            if (playerData.level >= 25) titles.push('Sales Legend');
+            if (playerData.level >= 30) titles.push('Elite SDR');
+            
+            titlesContainer.innerHTML = titles.map(title => `
+                <div class="character-title">
+                    <p class="text-sm font-bold" style="color: #d4af37;">${title}</p>
+                </div>
+            `).join('');
+        }
+        
+        // Update quest completion counter
+        function updateQuestCounter() {
+            const dailyQuests = ['daily-0', 'daily-1', 'daily-2'];
+            const completedToday = dailyQuests.filter(q => playerData.completedQuests.has(q)).length;
+            
+            document.getElementById('quests-completed-today').textContent = completedToday;
+            document.getElementById('quests-total-today').textContent = dailyQuests.length;
+        }
+
+        // Render charts
+        function renderCharts() {
+            // Weekly activity chart
+            const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+            new Chart(weeklyCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Cases Filed',
+                        data: [3, 5, 2, 8, 4, 6, 1],
+                        backgroundColor: '#d4af37'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: '#d4af37' } } },
+                    scales: {
+                        y: { ticks: { color: '#d4af37' }, grid: { color: '#4a3728' } },
+                        x: { ticks: { color: '#d4af37' }, grid: { color: '#4a3728' } }
+                    }
+                }
+            });
+
+            // Status chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Won', 'Active', 'Qualified'],
+                    datasets: [{
+                        data: [12, 8, 15],
+                        backgroundColor: ['#52b788', '#3b82f6', '#8b5cf6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: '#d4af37' } } }
+                }
+            });
+        }
+
+        // Calendar
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            document.getElementById('calendar-month').textContent = 
+                new Date(currentYear, currentMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < firstDay; i++) {
+                grid.innerHTML += '<div></div>';
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(currentYear, currentMonth, day).toDateString();
+                const isActive = playerData.activeDays.has(date);
+                const classes = isActive ? 'calendar-day calendar-active' : 'calendar-day bg-gray-700';
+                grid.innerHTML += `<div class="${classes} rounded p-4 text-center font-bold cursor-pointer">${day}</div>`;
+            }
+        }
+
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+        }
+
+        // Quests
+        function showQuestType(type) {
+            document.querySelectorAll('.quest-section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(type + '-quests').classList.remove('hidden');
+        }
+
+        function completeQuest(type, index) {
+            const questId = `${type}-${index}`;
+            if (!playerData.completedQuests.has(questId)) {
+                playerData.completedQuests.add(questId);
+                const xpReward = type === 'daily' ? [25, 15, 50][index] : 0;
+                updatePlayerXP(playerData.xp + xpReward);
+                playerData.totalCompleted++;
+                playerData.completedToday++;
+                updateStreak();
+                updateSDRStatus();
+                updateQuestCounter();
+                saveData();
+            }
+        }
+
+        // Calendar event form handler
+        document.getElementById('calendar-event-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('event-title').value;
+            const date = document.getElementById('event-date').value;
+            
+            if (title && date) {
+                addCalendarEvent(title, date);
+                document.getElementById('calendar-event-form').reset();
+                alert('✅ Event added successfully!');
+            }
+        });
+
+        document.getElementById('custom-quest-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('quest-name').value;
+            const desc = document.getElementById('quest-desc').value;
+            const xp = parseInt(document.getElementById('quest-xp').value);
+            
+            const quest = { 
+                id: 'custom-' + Date.now(),
+                name, 
+                desc, 
+                xp 
+            };
+            playerData.customQuests.push(quest);
+            saveData();
+            renderCustomQuests();
+            
+            document.getElementById('custom-quest-form').reset();
+            document.getElementById('quest-xp').value = '25';
+            
+            alert('✅ Quest created successfully!');
+        });
+
+        function renderCustomQuests() {
+            const list = document.getElementById('custom-quest-list');
+            if (playerData.customQuests.length === 0) {
+                list.innerHTML = '<p class="text-center py-8" style="color: #b8860b;">No custom quests yet</p>';
+                return;
+            }
+            
+            list.innerHTML = playerData.customQuests.map((q, i) => `
+                <div class="case-file rounded p-4 quest-item flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input type="checkbox" class="w-5 h-5 mr-4" ${q.completed ? 'checked' : ''} onchange="completeCustomQuest(${i})">
+                        <div>
+                            <p class="font-bold" style="color: #2c1810;">${q.name}</p>
+                            <p class="text-sm" style="color: #8b4513;">${q.desc}</p>
+                        </div>
+                    </div>
+                    <span class="brass-plate px-3 py-1 rounded text-sm" style="color: #2c1810;">+${q.xp} XP</span>
+                </div>
+            `).join('');
+        }
+
+        function completeCustomQuest(index) {
+            if (!playerData.customQuests[index].completed) {
+                playerData.customQuests[index].completed = true;
+                updatePlayerXP(playerData.xp + playerData.customQuests[index].xp);
+                playerData.totalCompleted++;
+                playerData.completedToday++;
+                updateSDRStatus();
+                saveData();
+            }
+        }
+
+        // Check achievement requirements
+        function checkAchievementUnlocked(achievement, stats) {
+            const req = achievement.req;
+            const count = achievement.count;
+            
+            switch(req) {
+                case 'meetings': return (stats.meetingsBooked || 0) >= count;
+                case 'cases': return (stats.total || 0) >= count;
+                case 'qualified': return (stats.qualified || 0) >= count;
+                case 'level': return playerData.level >= count;
+                case 'streak': return playerData.streak >= count;
+                case 'quests': return playerData.totalCompleted >= count;
+                case 'winStreak': return (stats.winStreak || 0) >= count;
+                default: return false;
+            }
+        }
+        
+        // Achievements
+        function renderAchievements(stats = {}) {
+            const unlockedAchievements = allAchievements.filter(a => checkAchievementUnlocked(a, stats));
+            const unlockedCount = unlockedAchievements.length;
+            const totalCount = allAchievements.length;
+            
+            document.getElementById('achievements-unlocked').textContent = unlockedCount;
+            document.getElementById('total-achievements').textContent = totalCount;
+            
+            const progressPercent = (unlockedCount / totalCount) * 100;
+            document.getElementById('achievement-progress-bar').style.width = progressPercent + '%';
+            
+            const grid = document.getElementById('achievements-grid');
+            grid.innerHTML = allAchievements.map(a => {
+                const unlocked = checkAchievementUnlocked(a, stats);
+                return `
+                    <div class="achievement-card leather-bound rounded-lg p-6 text-center transition-all ${unlocked ? 'achievement-unlocked' : 'achievement-locked opacity-50'}" style="${unlocked ? '' : 'filter: grayscale(100%);'}">
+                        <div class="mb-3">
+                            <i class="fas fa-${a.icon} text-4xl" style="color: ${unlocked ? '#d4af37' : '#555'};"></i>
+                        </div>
+                        <h3 class="font-bold legal-text text-base mb-2" style="color: ${unlocked ? '#d4af37' : '#666'};">${a.name}</h3>
+                        <p class="text-xs mb-2" style="color: ${unlocked ? '#b8860b' : '#555'};">${a.desc}</p>
+                        <p class="text-xs mb-3 font-bold uppercase" style="color: ${unlocked ? '#52b788' : '#555'};">${a.category}</p>
+                        ${unlocked ? 
+                            '<div class="brass-plate px-3 py-1 rounded-full inline-block text-xs" style="color: #2c1810;"><i class="fas fa-check mr-1"></i>UNLOCKED</div>' : 
+                            '<div class="bg-gray-800 px-3 py-1 rounded-full inline-block text-xs" style="color: #555;"><i class="fas fa-lock mr-1"></i>LOCKED</div>'}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Rewards
+        function renderRewards(stats = {}) {
+            const grid = document.getElementById('rewards-grid');
+            grid.innerHTML = allRewards.map(r => {
+                const unlocked = checkAchievementUnlocked(r, stats);
+                return `
+                    <div class="achievement-card judge-bench rounded-lg p-6 text-center ${unlocked ? '' : 'achievement-locked'}">
+                        <div class="mb-4">
+                            <i class="fas fa-${r.icon} text-5xl" style="color: ${unlocked ? r.color : '#666'};"></i>
+                        </div>
+                        <h3 class="font-bold legal-text text-lg mb-2" style="color: ${unlocked ? '#d4af37' : '#888'};">${r.name}</h3>
+                        <p class="text-sm mb-4" style="color: ${unlocked ? '#b8860b' : '#666'};">${r.desc}</p>
+                        ${unlocked ? 
+                            '<div class="brass-plate px-4 py-2 rounded-full inline-block" style="color: #2c1810;"><i class="fas fa-gift mr-2"></i>UNLOCKED</div>' : 
+                            '<div class="bg-gray-800 px-4 py-2 rounded-full inline-block text-gray-500"><i class="fas fa-lock mr-2"></i>LOCKED</div>'}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Update SDR Status
+        function updateSDRStatus() {
+            document.getElementById('status-streak').textContent = playerData.streak;
+            document.getElementById('status-total').textContent = playerData.totalCompleted;
+            document.getElementById('status-today').textContent = playerData.completedToday;
+            document.getElementById('status-today-total').textContent = '3';
+
+            const todayPercent = (playerData.completedToday / 3) * 100;
+            document.getElementById('today-progress-bar').style.width = todayPercent + '%';
+        }
+        
+        // Reset all data
+        function resetAllData() {
+            if (confirm('Are you sure you want to reset ALL data? This cannot be undone!')) {
+                localStorage.removeItem('hassanKazmiSDR');
+                location.reload();
+            }
+        }
+        
+        // Export data
+        function exportData() {
+            const dataToExport = {
+                ...playerData,
+                activeDays: Array.from(playerData.activeDays),
+                completedQuests: Array.from(playerData.completedQuests),
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(dataToExport, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `hassan-kazmi-sdr-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert('✅ Backup downloaded successfully!');
+        }
+        
+        // Import data
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (confirm('This will replace all your current data. Are you sure you want to continue?')) {
+                        // Restore data
+                        playerData = {
+                            ...importedData,
+                            activeDays: new Set(importedData.activeDays || []),
+                            completedQuests: new Set(importedData.completedQuests || [])
+                        };
+                        
+                        saveData();
+                        alert('✅ Data restored successfully!');
+                        location.reload();
+                    }
+                } catch (error) {
+                    alert('❌ Error: Invalid backup file. Please select a valid JSON backup file.');
+                    console.error('Import error:', error);
+                }
+            };
+            reader.readAsText(file);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            if (confirm('⚠️ WARNING: This will permanently delete ALL your data!\n\nThis includes:\n• All progress and stats\n• Quest history\n• Achievements\n• Rewards\n• Streak data\n\nThis action CANNOT be undone!\n\nAre you absolutely sure?')) {
+                if (confirm('Final confirmation: Delete everything?')) {
+                    localStorage.removeItem('hassanKazmiSDR');
+                    alert('✅ All data has been cleared.');
+                    location.reload();
+                }
+            }
+        }
+        
+        // Update data overview
+        function updateDataOverview() {
+            document.getElementById('data-level').textContent = playerData.level;
+            document.getElementById('data-quests').textContent = playerData.totalCompleted;
+            document.getElementById('data-streak').textContent = playerData.streak;
+            
+            // Calculate data size
+            const dataStr = JSON.stringify({
+                ...playerData,
+                activeDays: Array.from(playerData.activeDays),
+                completedQuests: Array.from(playerData.completedQuests)
+            });
+            const sizeInBytes = new Blob([dataStr]).size;
+            const sizeInKB = (sizeInBytes / 1024).toFixed(1);
+            document.getElementById('data-size').textContent = sizeInKB + 'KB';
+        }
+
+        // Load conversations
+        async function loadConversations() {
+            try {
+                const response = await fetch('/api/conversations');
+                const conversations = await response.json();
+                
+                const container = document.getElementById('conversations-list');
+                
+                if (conversations.length === 0) {
+                    container.innerHTML = `
+                        <div class="judge-bench rounded-lg p-12 text-center">
+                            <i class="fas fa-briefcase text-6xl mb-6" style="color: #b8860b;"></i>
+                            <p class="legal-text text-2xl" style="color: #d4af37;">No Active Cases</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = conversations.map(conv => `
+                    <div class="case-file rounded-lg p-8">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-bold serif-title mb-2" style="color: #2c1810;">${conv.prospectName}</h3>
+                                <p class="legal-text mb-4" style="color: #8b4513;">${conv.prospectTitle} at ${conv.prospectCompany}</p>
+                                <div class="flex items-center space-x-3 flex-wrap gap-2">
+                                    <span class="brass-plate px-4 py-2 rounded text-xs font-bold" style="color: #2c1810;">
+                                        ${conv.stage.replace('_', ' ').toUpperCase()}
+                                    </span>
+                                    ${conv.qualificationData?.qualified ? 
+                                        '<span class="bg-green-700 text-white px-4 py-2 rounded text-xs font-bold">QUALIFIED</span>' : ''}
+                                    ${conv.meetingBooked ?
+                                        '<span class="brass-plate px-4 py-2 rounded text-xs font-bold" style="color: #2c1810;">WON</span>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading conversations:', error);
+            }
+        }
+
+        // Campaign form
+        document.getElementById('campaign-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const jobTitles = document.getElementById('job-titles').value.split(',').map(s => s.trim()).filter(s => s);
+            const industries = document.getElementById('industries').value.split(',').map(s => s.trim()).filter(s => s);
+            const limit = parseInt(document.getElementById('prospect-limit').value);
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>INVESTIGATING...';
+
+            try {
+                const response = await fetch('/api/campaign/start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jobTitles, industries, limit })
+                });
+
+                const result = await response.json();
+                
+                document.getElementById('campaign-results').classList.remove('hidden');
+                document.getElementById('results-content').innerHTML = `
+                    <div class="case-file rounded-lg p-8 text-center border-l-4" style="border-color: #52b788;">
+                        <i class="fas fa-gavel text-6xl mb-4" style="color: #52b788;"></i>
+                        <p class="serif-title text-3xl font-bold mb-3" style="color: #2c1810;">INVESTIGATION COMPLETE</p>
+                        <p class="legal-text text-xl" style="color: #8b4513;">${result.prospectsContacted} cases filed</p>
+                        <p class="mt-6 serif-title text-2xl" style="color: #b8860b;">+${result.prospectsContacted * 10} XP</p>
+                    </div>
+                `;
+
+                updateStreak();
+                setTimeout(() => {
+                    loadStats();
+                    showTab('dashboard');
+                }, 2000);
+            } catch (error) {
+                document.getElementById('results-content').innerHTML = `
+                    <div class="bg-red-900 border-2 border-red-600 rounded-lg p-6">
+                        <p class="legal-text text-red-200">Investigation Failed: ${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-gavel mr-3"></i>BEGIN INVESTIGATION';
+            }
+        });
+
+        // Initialize
+        loadData();
+        loadStats();
+        loadConversations();
+        renderCalendar();
+        renderCharts();
+        updateQuestCounter();
+        updateEarnedTitles();
+        updateDataOverview();
+        renderCalendarEvents();
+        renderCustomQuests();
+        setInterval(loadStats, 30000);
+    </script>
+</body>
+</html>
