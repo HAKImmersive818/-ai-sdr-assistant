@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚖️ SDR Attorney - Case Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        @keyframes gavel-slam {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-15deg); }
+        }
+        @keyframes evidence-flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        @keyframes level-up {
+            0% { transform: scale(0) rotate(-180deg); }
+            50% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        .gavel-slam { animation: gavel-slam 0.5s ease-in-out; }
+        .evidence-flash { animation: evidence-flash 1s ease-in-out infinite; }
+        .level-up { animation: level-up 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .pixel-font { font-family: 'Press Start 2P', cursive; }
+        .retro-font { font-family: 'VT323', monospace; }
+        .courtroom-bg {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        }
+        .evidence-card {
+            background: linear-gradient(145deg, #2d3748, #1a202c);
+            border: 3px solid #d4af37;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+        .objection-btn {
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+        }
+        .objection-btn:hover {
+            box-shadow: 0 6px 25px rgba(220, 38, 38, 0.6);
+            transform: translateY(-2px);
+        }
+        .case-won {
+            background: linear-gradient(45deg, #059669, #047857);
+            animation: evidence-flash 2s ease-in-out;
+        }
+        .health-bar {
+            background: linear-gradient(90deg, #dc2626 0%, #f59e0b 50%, #10b981 100%);
+            height: 20px;
+            border-radius: 10px;
+            border: 2px solid #000;
+        }
+        .xp-bar {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            height: 12px;
+            border-radius: 6px;
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="courtroom-bg min-h-screen text-white">
+    <!-- Header - Attorney Badge -->
+    <div class="bg-black bg-opacity-50 border-b-4 border-yellow-500 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-yellow-500 rounded-full p-3 border-4 border-yellow-600 shadow-lg">
+                        <i class="fas fa-gavel text-black text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-yellow-400 pixel-font">SDR ATTORNEY</h1>
+                        <p class="text-sm text-gray-300 retro-font">Case Management System v2.0</p>
+                    </div>
+                </div>
+                
+                <!-- Player Stats -->
+                <div class="flex items-center space-x-6">
+                    <div class="text-right">
+                        <p class="text-xs text-gray-400 retro-font">ATTORNEY LEVEL</p>
+                        <p class="text-2xl font-bold text-yellow-400" id="player-level">1</p>
+                    </div>
+                    <div class="w-48">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-gray-400 retro-font">XP</span>
+                            <span class="text-yellow-400 retro-font"><span id="current-xp">0</span>/<span id="max-xp">100</span></span>
+                        </div>
+                        <div class="bg-gray-700 rounded-full h-3 border-2 border-gray-600">
+                            <div class="xp-bar" style="width: 0%" id="xp-bar"></div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-gray-400 retro-font">WIN STREAK</p>
+                        <p class="text-2xl font-bold text-green-400" id="win-streak">🔥 0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="bg-black bg-opacity-30 border-b-2 border-gray-700">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex space-x-2">
+                <button onclick="showTab('courtroom')" class="tab-btn px-6 py-3 font-bold retro-font text-lg border-b-4 border-transparent hover:border-yellow-500 transition-all">
+                    <i class="fas fa-balance-scale mr-2"></i>COURTROOM
+                </button>
+                <button onclick="showTab('cases')" class="tab-btn px-6 py-3 font-bold retro-font text-lg border-b-4 border-transparent hover:border-yellow-500 transition-all">
+                    <i class="fas fa-folder-open mr-2"></i>ACTIVE CASES
+                </button>
+                <button onclick="showTab('investigation')" class="tab-btn px-6 py-3 font-bold retro-font text-lg border-b-4 border-transparent hover:border-yellow-500 transition-all">
+                    <i class="fas fa-search mr-2"></i>INVESTIGATION
+                </button>
+                <button onclick="showTab('tutorial')" class="tab-btn px-6 py-3 font-bold retro-font text-lg border-b-4 border-transparent hover:border-yellow-500 transition-all">
+                    <i class="fas fa-book mr-2"></i>LAW LIBRARY
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- COURTROOM TAB -->
+        <div id="courtroom-tab" class="tab-content">
+            <div class="mb-8 text-center">
+                <h2 class="text-4xl font-bold text-yellow-400 pixel-font mb-2">⚖️ THE COURTROOM ⚖️</h2>
+                <p class="text-xl text-gray-300 retro-font">Your Record of Justice</p>
+            </div>
+
+            <!-- Stats Display - Evidence Board Style -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="evidence-card rounded-lg p-6 transform hover:scale-105 transition-transform">
+                    <div class="flex items-center justify-between mb-3">
+                        <i class="fas fa-folder text-yellow-400 text-3xl"></i>
+                        <div class="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold">TOTAL</div>
+                    </div>
+                    <p class="text-gray-400 text-sm retro-font mb-2">CASES OPENED</p>
+                    <p class="text-4xl font-bold text-white" id="stat-total">0</p>
+                    <p class="text-xs text-gray-500 mt-2 retro-font">+<span id="xp-total">0</span> XP</p>
+                </div>
+
+                <div class="evidence-card rounded-lg p-6 transform hover:scale-105 transition-transform case-won">
+                    <div class="flex items-center justify-between mb-3">
+                        <i class="fas fa-trophy text-yellow-400 text-3xl"></i>
+                        <div class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">WON</div>
+                    </div>
+                    <p class="text-gray-200 text-sm retro-font mb-2">CASES WON</p>
+                    <p class="text-4xl font-bold text-white" id="stat-meetings">0</p>
+                    <p class="text-xs text-gray-300 mt-2 retro-font">+<span id="xp-meetings">0</span> XP</p>
+                </div>
+
+                <div class="evidence-card rounded-lg p-6 transform hover:scale-105 transition-transform">
+                    <div class="flex items-center justify-between mb-3">
+                        <i class="fas fa-gavel text-yellow-400 text-3xl"></i>
+                        <div class="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">ACTIVE</div>
+                    </div>
+                    <p class="text-gray-400 text-sm retro-font mb-2">IN TRIAL</p>
+                    <p class="text-4xl font-bold text-white" id="stat-active">0</p>
+                    <p class="text-xs text-gray-500 mt-2 retro-font">Ongoing</p>
+                </div>
+
+                <div class="evidence-card rounded-lg p-6 transform hover:scale-105 transition-transform">
+                    <div class="flex items-center justify-between mb-3">
+                        <i class="fas fa-certificate text-yellow-400 text-3xl"></i>
+                        <div class="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold">QUALIFIED</div>
+                    </div>
+                    <p class="text-gray-400 text-sm retro-font mb-2">STRONG EVIDENCE</p>
+                    <p class="text-4xl font-bold text-white" id="stat-qualified">0</p>
+                    <p class="text-xs text-gray-500 mt-2 retro-font">High Win Rate</p>
+                </div>
+            </div>
+
+            <!-- Achievements Section -->
+            <div class="bg-black bg-opacity-40 rounded-lg p-6 border-2 border-yellow-600 mb-8">
+                <h3 class="text-2xl font-bold text-yellow-400 pixel-font mb-4">
+                    <i class="fas fa-medal mr-2"></i>ACHIEVEMENTS
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="achievements">
+                    <div class="bg-gray-800 rounded-lg p-4 text-center border-2 border-gray-700 opacity-50">
+                        <i class="fas fa-star text-gray-600 text-3xl mb-2"></i>
+                        <p class="text-xs retro-font text-gray-500">First Case</p>
+                        <p class="text-xs text-gray-600">Open 1 case</p>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4 text-center border-2 border-gray-700 opacity-50">
+                        <i class="fas fa-fire text-gray-600 text-3xl mb-2"></i>
+                        <p class="text-xs retro-font text-gray-500">Hot Streak</p>
+                        <p class="text-xs text-gray-600">Win 3 in a row</p>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4 text-center border-2 border-gray-700 opacity-50">
+                        <i class="fas fa-crown text-gray-600 text-3xl mb-2"></i>
+                        <p class="text-xs retro-font text-gray-500">Master Attorney</p>
+                        <p class="text-xs text-gray-600">Reach Level 10</p>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4 text-center border-2 border-gray-700 opacity-50">
+                        <i class="fas fa-bolt text-gray-600 text-3xl mb-2"></i>
+                        <p class="text-xs retro-font text-gray-500">Speed Demon</p>
+                        <p class="text-xs text-gray-600">Win 5 cases in 1 day</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Verdicts -->
+            <div class="bg-black bg-opacity-40 rounded-lg p-6 border-2 border-gray-700">
+                <h3 class="text-2xl font-bold text-white pixel-font mb-4">
+                    <i class="fas fa-scroll mr-2"></i>RECENT VERDICTS
+                </h3>
+                <div id="recent-activity" class="space-y-3">
+                    <p class="text-gray-400 text-center py-8 retro-font text-xl">No cases filed yet. Begin your investigation!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIVE CASES TAB -->
+        <div id="cases-tab" class="tab-content hidden">
+            <div class="mb-8 text-center">
+                <h2 class="text-4xl font-bold text-yellow-400 pixel-font mb-2">📁 ACTIVE CASE FILES</h2>
+                <p class="text-xl text-gray-300 retro-font">Ongoing Investigations & Trials</p>
+            </div>
+
+            <div id="conversations-list" class="space-y-4">
+                <div class="bg-black bg-opacity-40 rounded-lg p-8 text-center border-2 border-gray-700">
+                    <i class="fas fa-folder-open text-gray-600 text-6xl mb-4"></i>
+                    <p class="text-gray-400 retro-font text-xl">No active cases in the docket</p>
+                    <p class="text-gray-500 text-sm mt-2">Start an investigation to open new cases</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- INVESTIGATION TAB -->
+        <div id="investigation-tab" class="tab-content hidden">
+            <div class="mb-8 text-center">
+                <h2 class="text-4xl font-bold text-yellow-400 pixel-font mb-2">🔍 INVESTIGATION PHASE</h2>
+                <p class="text-xl text-gray-300 retro-font">Gather Evidence & Build Your Case</p>
+            </div>
+
+            <div class="bg-black bg-opacity-40 rounded-lg p-8 border-2 border-yellow-600">
+                <div class="mb-6 text-center">
+                    <div class="inline-block bg-red-600 text-white px-6 py-3 rounded-lg border-4 border-red-800 shadow-lg mb-4">
+                        <p class="pixel-font text-2xl">⚠️ OBJECTION! ⚠️</p>
+                    </div>
+                    <p class="text-gray-300 retro-font text-lg">Time to investigate new prospects!</p>
+                </div>
+
+                <form id="campaign-form" class="space-y-6">
+                    <div class="bg-gray-900 bg-opacity-50 p-6 rounded-lg border-2 border-gray-700">
+                        <label class="block text-yellow-400 font-bold retro-font text-lg mb-3">
+                            <i class="fas fa-crosshairs mr-2"></i>TARGET SUSPECTS (Job Titles)
+                        </label>
+                        <input type="text" id="job-titles" 
+                               class="w-full px-4 py-3 bg-gray-800 border-2 border-gray-600 rounded-lg text-white retro-font text-lg focus:border-yellow-500 focus:outline-none"
+                               placeholder="VP of Sales, Director of Marketing, Chief Revenue Officer">
+                        <p class="text-xs text-gray-500 mt-2 retro-font">Separate multiple targets with commas</p>
+                    </div>
+
+                    <div class="bg-gray-900 bg-opacity-50 p-6 rounded-lg border-2 border-gray-700">
+                        <label class="block text-yellow-400 font-bold retro-font text-lg mb-3">
+                            <i class="fas fa-building mr-2"></i>CRIME SCENE (Industries)
+                        </label>
+                        <input type="text" id="industries"
+                               class="w-full px-4 py-3 bg-gray-800 border-2 border-gray-600 rounded-lg text-white retro-font text-lg focus:border-yellow-500 focus:outline-none"
+                               placeholder="SaaS, Technology, E-commerce, FinTech">
+                        <p class="text-xs text-gray-500 mt-2 retro-font">Where will you find your suspects?</p>
+                    </div>
+
+                    <div class="bg-gray-900 bg-opacity-50 p-6 rounded-lg border-2 border-gray-700">
+                        <label class="block text-yellow-400 font-bold retro-font text-lg mb-3">
+                            <i class="fas fa-users mr-2"></i>NUMBER OF SUSPECTS
+                        </label>
+                        <input type="number" id="prospect-limit" value="5" min="1" max="50"
+                               class="w-full px-4 py-3 bg-gray-800 border-2 border-gray-600 rounded-lg text-white retro-font text-lg focus:border-yellow-500 focus:outline-none">
+                        <p class="text-xs text-gray-500 mt-2 retro-font">How many cases to open? (1-50)</p>
+                    </div>
+
+                    <button type="submit" 
+                            class="w-full objection-btn text-white font-bold py-4 px-8 rounded-lg pixel-font text-xl transform hover:scale-105 transition-all">
+                        <i class="fas fa-gavel mr-3"></i>BEGIN INVESTIGATION!
+                    </button>
+                </form>
+
+                <div id="campaign-results" class="mt-8 hidden">
+                    <div id="results-content" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- Investigation Guide -->
+            <div class="mt-8 bg-blue-900 bg-opacity-30 border-2 border-blue-500 p-6 rounded-lg">
+                <h3 class="text-xl font-bold text-blue-300 pixel-font mb-4">
+                    <i class="fas fa-lightbulb mr-2"></i>INVESTIGATION PROTOCOL
+                </h3>
+                <div class="space-y-3 text-blue-200 retro-font text-lg">
+                    <p><i class="fas fa-check text-green-400 mr-2"></i>AI investigates suspects matching your criteria</p>
+                    <p><i class="fas fa-check text-green-400 mr-2"></i>Gathers evidence through deep research</p>
+                    <p><i class="fas fa-check text-green-400 mr-2"></i>Builds personalized case using SPIN/BANT/MEDDIC</p>
+                    <p><i class="fas fa-check text-green-400 mr-2"></i>Presents evidence and manages interrogation</p>
+                    <p><i class="fas fa-check text-green-400 mr-2"></i>Secures verdict (meeting) when case is strong</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TUTORIAL TAB -->
+        <div id="tutorial-tab" class="tab-content hidden">
+            <div class="mb-8 text-center">
+                <h2 class="text-4xl font-bold text-yellow-400 pixel-font mb-2">📚 LAW LIBRARY</h2>
+                <p class="text-xl text-gray-300 retro-font">Master the Art of Sales Prosecution</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Getting Started -->
+                <div class="bg-black bg-opacity-40 rounded-lg p-6 border-2 border-green-600">
+                    <h3 class="text-2xl font-bold text-green-400 pixel-font mb-4">
+                        <i class="fas fa-play-circle mr-2"></i>GETTING STARTED
+                    </h3>
+                    <div class="space-y-4 text-gray-300 retro-font text-lg">
+                        <div class="bg-gray-900 bg-opacity-50 p-4 rounded border-l-4 border-green-500">
+                            <p class="font-bold text-green-400 mb-2">1. Configure Your Profile</p>
+                            <p class="text-sm">Edit <code class="bg-gray-800 px-2 py-1 rounded">config/user-profile.json</code> with your info and ICP</p>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 p-4 rounded border-l-4 border-green-500">
+                            <p class="font-bold text-green-400 mb-2">2. Start Investigation</p>
+                            <p class="text-sm">Go to Investigation tab, set your targets, and begin!</p>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 p-4 rounded border-l-4 border-green-500">
+                            <p class="font-bold text-green-400 mb-2">3. Review Cases</p>
+                            <p class="text-sm">Check Active Cases to see AI-generated messages</p>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 p-4 rounded border-l-4 border-green-500">
+                            <p class="font-bold text-green-400 mb-2">4. Win Cases</p>
+                            <p class="text-sm">AI qualifies prospects and books meetings automatically</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legal Framework (Sales Methodologies) -->
+                <div class="bg-black bg-opacity-40 rounded-lg p-6 border-2 border-purple-600">
+                    <h3 class="text-2xl font-bold text-purple-400 pixel-font mb-4">
+                        <i class="fas fa-balance-scale mr-2"></i>LEGAL FRAMEWORK
+                    </h3>
+                    <div class="space-y-3 text-gray-300 retro-font">
+                        <div class="bg-purple-900 bg-opacity-30 p-3 rounded border-l-4 border-purple-500">
+                            <p class="font-bold text-purple-300">SPIN Interrogation</p>
+                            <p class="text-sm">Situation → Problem → Implication → Need-Payoff</p>
+                        </div>
+                        <div class="bg-purple-900 bg-opacity-30 p-3 rounded border-l-4 border-purple-500">
+                            <p class="font-bold text-purple-300">BANT Evidence</p>
+                            <p class="text-sm">Budget → Authority → Need → Timeline</p>
+                        </div>
+                        <div class="bg-purple-900 bg-opacity-30 p-3 rounded border-l-4 border-purple-500">
+                            <p class="font-bold text-purple-300">MEDDIC Prosecution</p>
+                            <p class="text-sm">Metrics → Economic Buyer → Decision Criteria → Process → Pain → Champion</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leveling System -->
+                <div class="bg-black bg-opacity-40 rounded-lg p-6 border-2 border-yellow-600">
+                    <h3 class="text-2xl font-bold text-yellow-400 pixel-font mb-4">
+                        <i class="fas fa-star mr-2"></i>RANKING SYSTEM
+                    </h3>
+                    <div class="space-y-3 text-gray-300 retro-font">
+                        <p class="text-sm">Earn XP by opening and winning cases:</p>
+                        <div class="bg-gray-900 bg-opacity-50 p-3 rounded">
+                            <p><i class="fas fa-folder text-blue-400 mr-2"></i>Open Case: <span class="text-yellow-400">+10 XP</span></p>
+                            <p><i class="fas fa-trophy text-green-400 mr-2"></i>Win Case: <span class="text-yellow-400">+50 XP</span></p>
+                            <p><i class="fas fa-certificate text-purple-400 mr-2"></i>Qualify Suspect: <span class="text-yellow-400">+25 XP</span></p>
+                        </div>
+                        <div class="mt-4 space-y-2 text-sm">
+                            <p class="font-bold text-yellow-400">Attorney Ranks:</p>
+                            <p>🎓 Level 1-3: Junior Attorney</p>
+                            <p>⚖️ Level 4-6: Senior Attorney</p>
+                            <p>🏛️ Level 7-9: Lead Prosecutor</p>
+                            <p>👑 Level 10+: Chief Justice</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Configuration -->
+                <div class="bg-black bg-opacity-40 rounded-lg p-6 border-2 border-red-600">
+                    <h3 class="text-2xl font-bold text-red-400 pixel-font mb-4">
+                        <i class="fas fa-key mr-2"></i>CREDENTIALS
+                    </h3>
+                    <div class="space-y-3 text-gray-300 retro-font text-sm">
+                        <p>Your AI attorney needs proper credentials:</p>
+                        <div class="bg-gray-900 bg-opacity-50 p-4 rounded border-l-4 border-red-500">
+                            <p class="font-bold text-red-300 mb-2">Anthropic API Key</p>
+                            <p class="text-xs">Already configured in .env file ✓</p>
+                            <p class="text-xs text-green-400 mt-1">Status: ACTIVE</p>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 p-4 rounded border-l-4 border-gray-600">
+                            <p class="font-bold text-gray-300 mb-2">HubSpot Integration (Optional)</p>
+                            <p class="text-xs">Add HUBSPOT_API_KEY to .env for CRM sync</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Level Up Modal -->
+    <div id="level-up-modal" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center z-50">
+        <div class="bg-gradient-to-br from-yellow-600 to-yellow-800 p-8 rounded-lg border-4 border-yellow-400 text-center level-up max-w-md">
+            <i class="fas fa-trophy text-white text-6xl mb-4"></i>
+            <h2 class="text-4xl font-bold text-white pixel-font mb-2">LEVEL UP!</h2>
+            <p class="text-2xl text-yellow-200 retro-font mb-4">You reached Level <span id="new-level">2</span>!</p>
+            <p class="text-white retro-font text-lg mb-6">Your attorney skills have improved!</p>
+            <button onclick="closeLevelUpModal()" class="bg-white text-yellow-800 px-6 py-3 rounded-lg font-bold pixel-font hover:bg-yellow-100">
+                CONTINUE
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let playerData = {
+            level: 1,
+            xp: 0,
+            maxXp: 100,
+            winStreak: 0,
+            totalCases: 0,
+            casesWon: 0
+        };
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-yellow-500');
+            });
+            event.target.closest('.tab-btn').classList.add('border-yellow-500');
+
+            if (tabName === 'courtroom') loadStats();
+            if (tabName === 'cases') loadConversations();
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const stats = await response.json();
+                
+                document.getElementById('stat-total').textContent = stats.total || 0;
+                document.getElementById('stat-meetings').textContent = stats.meetingsBooked || 0;
+                document.getElementById('stat-active').textContent = stats.active || 0;
+                document.getElementById('stat-qualified').textContent = stats.qualified || 0;
+
+                updatePlayerXP(stats.total * 10 + stats.meetingsBooked * 50 + stats.qualified * 25);
+                
+                document.getElementById('xp-total').textContent = (stats.total * 10);
+                document.getElementById('xp-meetings').textContent = (stats.meetingsBooked * 50);
+
+                checkAchievements(stats);
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function updatePlayerXP(totalXp) {
+            playerData.xp = totalXp % playerData.maxXp;
+            playerData.level = Math.floor(totalXp / playerData.maxXp) + 1;
+            
+            document.getElementById('player-level').textContent = playerData.level;
+            document.getElementById('current-xp').textContent = playerData.xp;
+            document.getElementById('max-xp').textContent = playerData.maxXp;
+            
+            const xpPercentage = (playerData.xp / playerData.maxXp) * 100;
+            document.getElementById('xp-bar').style.width = xpPercentage + '%';
+        }
+
+        function checkAchievements(stats) {
+            const achievementsDiv = document.getElementById('achievements');
+            let html = '';
+            
+            const achievements = [
+                { id: 'first', unlocked: stats.total >= 1, icon: 'star', name: 'First Case', desc: 'Open 1 case' },
+                { id: 'streak', unlocked: stats.meetingsBooked >= 3, icon: 'fire', name: 'Hot Streak', desc: 'Win 3 cases' },
+                { id: 'master', unlocked: playerData.level >= 10, icon: 'crown', name: 'Master Attorney', desc: 'Reach Level 10' },
+                { id: 'speed', unlocked: stats.meetingsBooked >= 5, icon: 'bolt', name: 'Speed Demon', desc: 'Win 5 cases' }
+            ];
+
+            achievements.forEach(ach => {
+                const unlocked = ach.unlocked;
+                html += `
+                    <div class="bg-gray-800 rounded-lg p-4 text-center border-2 ${unlocked ? 'border-yellow-500' : 'border-gray-700'} ${unlocked ? '' : 'opacity-50'}">
+                        <i class="fas fa-${ach.icon} ${unlocked ? 'text-yellow-400' : 'text-gray-600'} text-3xl mb-2"></i>
+                        <p class="text-xs retro-font ${unlocked ? 'text-yellow-300' : 'text-gray-500'}">${ach.name}</p>
+                        <p class="text-xs ${unlocked ? 'text-gray-300' : 'text-gray-600'}">${ach.desc}</p>
+                    </div>
+                `;
+            });
+            
+            achievementsDiv.innerHTML = html;
+        }
+
+        async function loadConversations() {
+            try {
+                const response = await fetch('/api/conversations');
+                const conversations = await response.json();
+                
+                const container = document.getElementById('conversations-list');
+                
+                if (conversations.length === 0) {
+                    container.innerHTML = `
+                        <div class="bg-black bg-opacity-40 rounded-lg p-8 text-center border-2 border-gray-700">
+                            <i class="fas fa-folder-open text-gray-600 text-6xl mb-4"></i>
+                            <p class="text-gray-400 retro-font text-xl">No active cases in the docket</p>
+                            <p class="text-gray-500 text-sm mt-2">Start an investigation to open new cases</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = conversations.map(conv => `
+                    <div class="evidence-card rounded-lg p-6 transform hover:scale-102 transition-transform">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center mb-2">
+                                    <i class="fas fa-user-tie text-yellow-400 text-2xl mr-3"></i>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-white retro-font">${conv.prospectName}</h3>
+                                        <p class="text-gray-400 text-sm">${conv.prospectTitle} at ${conv.prospectCompany}</p>
+                                    </div>
+                                </div>
+                                <div class="mt-4 flex items-center space-x-3 flex-wrap gap-2">
+                                    <span class="px-3 py-1 bg-blue-600 text-white rounded-full text-xs font-bold retro-font">
+                                        ${conv.stage.replace('_', ' ').toUpperCase()}
+                                    </span>
+                                    <span class="px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-xs retro-font">
+                                        <i class="fas fa-comments mr-1"></i>${conv.messages.length} exchanges
+                                    </span>
+                                    ${conv.qualificationData?.qualified ? 
+                                        '<span class="px-3 py-1 bg-green-600 text-white rounded-full text-xs font-bold retro-font"><i class="fas fa-check mr-1"></i>STRONG CASE</span>' : 
+                                        ''}
+                                    ${conv.meetingBooked ?
+                                        '<span class="px-3 py-1 bg-yellow-500 text-black rounded-full text-xs font-bold retro-font"><i class="fas fa-trophy mr-1"></i>CASE WON</span>' :
+                                        ''}
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500 retro-font">${new Date(conv.updatedAt).toLocaleDateString()}</p>
+                                <i class="fas fa-folder-open text-yellow-400 text-3xl mt-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading conversations:', error);
+            }
+        }
+
+        document.getElementById('campaign-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const jobTitles = document.getElementById('job-titles').value
+                .split(',').map(s => s.trim()).filter(s => s);
+            const industries = document.getElementById('industries').value
+                .split(',').map(s => s.trim()).filter(s => s);
+            const limit = parseInt(document.getElementById('prospect-limit').value);
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>INVESTIGATING...';
+
+            try {
+                const response = await fetch('/api/campaign/start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jobTitles, industries, limit })
+                });
+
+                const result = await response.json();
+                
+                document.getElementById('campaign-results').classList.remove('hidden');
+                document.getElementById('results-content').innerHTML = `
+                    <div class="bg-green-900 bg-opacity-50 border-2 border-green-500 rounded-lg p-6 text-center">
+                        <i class="fas fa-gavel text-green-400 text-5xl mb-4 gavel-slam"></i>
+                        <p class="text-green-300 font-bold retro-font text-2xl mb-2">
+                            INVESTIGATION COMPLETE!
+                        </p>
+                        <p class="text-green-200 retro-font text-lg">
+                            ${result.prospectsContacted} cases opened and ready for trial
+                        </p>
+                        <p class="text-yellow-400 mt-4 pixel-font">+${result.prospectsContacted * 10} XP</p>
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    loadStats();
+                    showTab('courtroom');
+                }, 2000);
+            } catch (error) {
+                document.getElementById('results-content').innerHTML = `
+                    <div class="bg-red-900 bg-opacity-50 border-2 border-red-500 rounded-lg p-4">
+                        <p class="text-red-300 retro-font">Investigation Failed: ${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-gavel mr-3"></i>BEGIN INVESTIGATION!';
+            }
+        });
+
+        function closeLevelUpModal() {
+            document.getElementById('level-up-modal').classList.add('hidden');
+        }
+
+        loadStats();
+        setInterval(loadStats, 30000);
+        
+        showTab('tutorial');
+    </script>
+</body>
+</html>

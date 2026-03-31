@@ -1,0 +1,52 @@
+{
+  "user": {
+    "name": "Your Name",
+    "role": "SDR",
+    "company": "Your Company",
+    "industry": "Your Industry",
+    "value_proposition": "What unique value do you provide?",
+    "experience": "Brief background and expertise",
+    "linkedin_url": "https://linkedin.com/in/yourprofile",
+    "calendar_link": "https://calendly.com/yourlink"
+  },
+  "icp": {
+    "job_titles": [
+      "VP of Sales",
+      "Director of Marketing",
+      "Head of Growth",
+      "Chief Revenue Officer"
+    ],
+    "industries": [
+      "SaaS",
+      "Technology",
+      "E-commerce"
+    ],
+    "company_size": {
+      "min_employees": 50,
+      "max_employees": 500
+    },
+    "geography": [
+      "United States",
+      "United Kingdom",
+      "Canada"
+    ],
+    "pain_points": [
+      "Struggling with lead generation",
+      "Low conversion rates",
+      "Manual sales processes",
+      "Inefficient outreach"
+    ],
+    "buying_signals": [
+      "Recent funding",
+      "Hiring for sales roles",
+      "Mentioned growth initiatives",
+      "Posted about scaling challenges"
+    ]
+  },
+  "messaging": {
+    "tone": "professional yet conversational",
+    "max_message_length": 300,
+    "include_emojis": false,
+    "personalization_depth": "high"
+  }
+}

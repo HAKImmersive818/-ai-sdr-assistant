@@ -1,0 +1,159 @@
+{
+  "SPIN": {
+    "name": "SPIN Selling",
+    "description": "A consultative selling methodology focused on asking the right questions",
+    "framework": {
+      "Situation": {
+        "description": "Questions about the prospect's current situation",
+        "examples": [
+          "How are you currently handling [process]?",
+          "What tools are you using for [task]?",
+          "How is your team structured around [function]?"
+        ]
+      },
+      "Problem": {
+        "description": "Questions that uncover problems or difficulties",
+        "examples": [
+          "What challenges are you facing with [current solution]?",
+          "How much time does your team spend on [manual task]?",
+          "What's preventing you from achieving [goal]?"
+        ]
+      },
+      "Implication": {
+        "description": "Questions about the consequences of the problem",
+        "examples": [
+          "How does this impact your team's productivity?",
+          "What does this cost you in terms of revenue/time?",
+          "How does this affect your ability to scale?"
+        ]
+      },
+      "Need-Payoff": {
+        "description": "Questions about the value of solving the problem",
+        "examples": [
+          "How would it help if you could automate this process?",
+          "What would it mean for your team to save X hours per week?",
+          "How would solving this impact your quarterly goals?"
+        ]
+      }
+    }
+  },
+  "BANT": {
+    "name": "BANT Qualification",
+    "description": "Framework for qualifying leads based on Budget, Authority, Need, and Timeline",
+    "framework": {
+      "Budget": {
+        "description": "Does the prospect have budget allocated?",
+        "qualification_questions": [
+          "What's your budget for solving this problem?",
+          "Have you allocated funds for this initiative?",
+          "What's the cost of not solving this issue?"
+        ]
+      },
+      "Authority": {
+        "description": "Is the prospect a decision-maker?",
+        "qualification_questions": [
+          "Who else is involved in this decision?",
+          "What's your role in the evaluation process?",
+          "Who has final approval on this?"
+        ]
+      },
+      "Need": {
+        "description": "Does the prospect have a clear need?",
+        "qualification_questions": [
+          "What's driving this initiative?",
+          "What happens if you don't solve this?",
+          "How critical is this to your business?"
+        ]
+      },
+      "Timeline": {
+        "description": "When does the prospect need a solution?",
+        "qualification_questions": [
+          "When do you need this implemented?",
+          "What's driving your timeline?",
+          "Are there any upcoming deadlines or events?"
+        ]
+      }
+    }
+  },
+  "MEDDIC": {
+    "name": "MEDDIC Sales Process",
+    "description": "Enterprise sales methodology for complex B2B deals",
+    "framework": {
+      "Metrics": {
+        "description": "Quantifiable business impact",
+        "focus": [
+          "ROI calculations",
+          "Cost savings",
+          "Revenue impact",
+          "Efficiency gains"
+        ]
+      },
+      "Economic_Buyer": {
+        "description": "Person with budget authority",
+        "focus": [
+          "Identify the economic buyer",
+          "Understand their priorities",
+          "Align solution to their goals"
+        ]
+      },
+      "Decision_Criteria": {
+        "description": "How they will evaluate solutions",
+        "focus": [
+          "Technical requirements",
+          "Business requirements",
+          "Evaluation process",
+          "Success criteria"
+        ]
+      },
+      "Decision_Process": {
+        "description": "Steps to make a purchase decision",
+        "focus": [
+          "Stakeholders involved",
+          "Timeline and milestones",
+          "Approval process",
+          "Legal/procurement requirements"
+        ]
+      },
+      "Identify_Pain": {
+        "description": "Critical business pain points",
+        "focus": [
+          "Business impact of pain",
+          "Urgency to solve",
+          "Cost of inaction",
+          "Personal impact on champion"
+        ]
+      },
+      "Champion": {
+        "description": "Internal advocate for your solution",
+        "focus": [
+          "Identify potential champions",
+          "Build champion relationship",
+          "Enable champion to sell internally",
+          "Align champion's success with solution"
+        ]
+      }
+    }
+  },
+  "conversation_stages": {
+    "initial_outreach": {
+      "goal": "Get a response and start a conversation",
+      "approach": "Personalized, value-focused, brief",
+      "methodology": "Light SPIN (Situation questions)"
+    },
+    "qualification": {
+      "goal": "Determine if prospect is a good fit",
+      "approach": "Ask qualifying questions naturally",
+      "methodology": "BANT framework"
+    },
+    "discovery": {
+      "goal": "Understand deep needs and pain points",
+      "approach": "Consultative, question-based",
+      "methodology": "SPIN + MEDDIC"
+    },
+    "meeting_booking": {
+      "goal": "Schedule a formal meeting",
+      "approach": "Clear value proposition, easy scheduling",
+      "methodology": "Need-Payoff questions"
+    }
+  }
+}
